@@ -9,13 +9,9 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.test.context.junit4.SpringRunner
 import spock.lang.Shared
 import spock.lang.Specification
-
-import java.lang.reflect.Field
 
 // 使用Spock测试框架框架就不能使用下面的注解否则报错No runnable methods
 //@RunWith(SpringRunner.class)
@@ -54,6 +50,7 @@ class TestControllerTests extends Specification{
     }
 
     def '测试/getOtherById'() {
+        // given 定义数据
         given: '定义请求数据格式'
         // 初始化我们测试接口返回的数据
         other = new Other()
@@ -61,12 +58,24 @@ class TestControllerTests extends Specification{
         other.setName("myName")
         other.setEnabled(true)
 
-        when: '向接口发请求'
+        // and 准备数据
+        and:'mock'
         otherService.getOtherById(_) >> other
 
+        // when 待测试的函数
+        when: '向接口发请求'
+        Other other1 = testController.getOtherById(a)
+
+        // then 判断是否符合预期
         then: '状态码为200'
-        Other other1 = testController.getOtherById(2)
         println(JSON.toJSONString(other1))
-        Assert.assertEquals('myName', other1.name)
+//        Assert.assertEquals('myName', other1.name)
+        other1.name==c
+
+        // where 反复调用
+        where:
+        a|c
+        1|'name'
+        2|'myName'
     }
 }
