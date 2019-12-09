@@ -17,11 +17,11 @@ import spock.lang.Specification
 //@RunWith(SpringRunner.class)
 // 如果不RANDOM_PORT的话TestRestTemplate注入时会异常NoSuchBeanDefinitionException
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class TestControllerTests extends Specification{
+class TestControllerTests extends Specification {
     @Autowired
     private TestRestTemplate testRestTemplate
 
-    TestController testController=new TestController()
+    TestController testController = new TestController()
     @Autowired
     IOtherService otherService;
 
@@ -29,8 +29,8 @@ class TestControllerTests extends Specification{
     def Other other
 
     void setup() {
-        otherService=Mock(IOtherService)
-        testController.iOtherService=otherService
+        otherService = Mock(IOtherService)
+        testController.iOtherService = otherService
     }
 
     def '测试/hello'() {
@@ -38,7 +38,7 @@ class TestControllerTests extends Specification{
         def searchParam = ""
 
         when: '向接口发请求'
-        Cc context = testRestTemplate.getForObject("/hello",Cc.class);
+        Cc context = testRestTemplate.getForObject("/hello", Cc.class);
 
         then: '状态码为200'
         println(JSON.toJSONString(context))
@@ -59,7 +59,7 @@ class TestControllerTests extends Specification{
         other.setEnabled(true)
 
         // and 准备数据
-        and:'mock'
+        and: 'mock'
         otherService.getOtherById(_) >> other
 
         // when 待测试的函数
@@ -69,13 +69,13 @@ class TestControllerTests extends Specification{
         // then 判断是否符合预期
         then: '状态码为200'
         println(JSON.toJSONString(other1))
-//        Assert.assertEquals('myName', other1.name)
-        other1.name==c
+        Assert.assertEquals(c, other1.name)
+//        other1.name == c
 
         // where 反复调用
         where:
-        a|c
-        1|'name'
-        2|'myName'
+        a | c
+        1 | 'name'
+        2 | 'myName'
     }
 }
